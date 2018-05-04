@@ -1,0 +1,18 @@
+MODULE main
+	VAR
+		HA: process lead_vehicle(HA, )
+		HB: process lead_vehicle(HB, )
+
+MODULE lead_vehicle(id, )
+	VAR
+		point: {node1, node2, node3, node4, node5};
+	ASSIGN
+		init(point) :=
+			case
+				(id = HA): node1;
+				(id = HB): node3;
+				(id = T1): node1;
+				(id = T2): node1;
+				(id = T3): node3;
+			esac;
+		next(point) :=
