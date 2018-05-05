@@ -1,9 +1,10 @@
 MODULE main
 	VAR
-		HA: process lead_vehicle(HA, )
-		HB: process lead_vehicle(HB, )
+		HA: process lead_vehicle(HA, );
+		HB: process lead_vehicle(HB, );
 
-MODULE lead_vehicle(id, )
+
+MODULE lead_vehicle(id)
 	VAR
 		point: {node1, node2, node3, node4, node5};
 	ASSIGN
@@ -11,8 +12,26 @@ MODULE lead_vehicle(id, )
 			case
 				(id = HA): node1;
 				(id = HB): node3;
+			esac;
+		next(point) :=
+			case
+				(id = HA) && (point = node1): node2;
+				(id = HA) && (point = node2): node3;
+				(id = HA) && (point = node3): node1;
+				(id = HB) && (point = node3): node5;
+				(id = HB) && (point = node5): node1;
+				(id = HB) && (point = node1): node4;
+				(id = HB) && (point = node4): node3;
+			esac;
+
+
+MODULE trailer(id)
+	VAR
+		point: {node1, node2, node3, node4, node5};
+	ASSIGN
+		init(point) :=
+			case
 				(id = T1): node1;
 				(id = T2): node1;
 				(id = T3): node3;
 			esac;
-		next(point) :=
