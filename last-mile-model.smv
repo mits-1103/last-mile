@@ -1,7 +1,10 @@
 MODULE main
 	VAR
-		HA: process lead_vehicle(HA, );
-		HB: process lead_vehicle(HB, );
+		HA: process lead_vehicle(HA);
+		HB: process lead_vehicle(HB);
+		T1: process trailer(T1);
+		T2: process trailer(T2);
+		T3: process trailer(T3);
 
 
 MODULE lead_vehicle(id)
