@@ -1,40 +1,45 @@
-MODULE main
-	VAR
-		HA: process lead_vehicle(HA);
-		HB: process lead_vehicle(HB);
-		T1: process trailer(T1);
-		T2: process trailer(T2);
-		T3: process trailer(T3);
-
-
 MODULE lead_vehicle(id)
+	FAIRNESS running
 	VAR
 		point: {node1, node2, node3, node4, node5};
 	ASSIGN
 		init(point) :=
 			case
-				(id = HA): node1;
-				(id = HB): node3;
+				(id = a): node1;
+				(id = b): node3;
 			esac;
 		next(point) :=
 			case
-				(id = HA) && (point = node1): node2;
-				(id = HA) && (point = node2): node3;
-				(id = HA) && (point = node3): node1;
-				(id = HB) && (point = node3): node5;
-				(id = HB) && (point = node5): node1;
-				(id = HB) && (point = node1): node4;
-				(id = HB) && (point = node4): node3;
+				(id = a) & (point = node1): node2;
+				(id = a) & (point = node2): node3;
+				(id = a) & (point = node3): node1;
+				(id = b) & (point = node3): node5;
+				(id = b) & (point = node5): node1;
+				(id = b) & (point = node1): node4;
+				(id = b) & (point = node4): node3;
+				TRUE: point;
 			esac;
 
 
-MODULE trailer(id)
+--MODULE trailer(id)
+--	VAR
+--		point: {node1, node2, node3, node4, node5};
+--	ASSIGN
+--		init(point) :=
+--			case
+--				(id = 1): node1;
+--				(id = 2): node1;
+--				(id = 3): node3;
+--			esac;
+
+MODULE main
 	VAR
-		point: {node1, node2, node3, node4, node5};
-	ASSIGN
-		init(point) :=
-			case
-				(id = T1): node1;
-				(id = T2): node1;
-				(id = T3): node3;
-			esac;
+		id: {a,b};
+		HA: process lead_vehicle(a);
+		HB: process lead_vehicle(b);
+--		T1: process trailer(1);
+--		T2: process trailer(2);
+--		T3: process trailer(3);
+
+--reachability: lead vehicle HA will enter node3.
+LTLSPEC F(HA.point = node3)
