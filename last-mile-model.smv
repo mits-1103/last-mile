@@ -15,6 +15,7 @@ MODULE lead_vehicle(id)
 				(id = a): node1;
 				(id = b): node3;
 			esac;
+		init(num_node2) := 0;
 
 		next(point) :=
 			case
@@ -43,6 +44,8 @@ MODULE trailer(id)
 
 
 MODULE connect_vehicle()
+	VAR
+		init()
 
 
 MODULE disconnect_vehicle()
