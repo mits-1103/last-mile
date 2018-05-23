@@ -1,26 +1,41 @@
 MODULE lead_vehicle(id)
 	VAR
-		point: {node1, node2, node3, node4, node5};
-		num_link: 0..10;
-		num_node2: 0..10;
+		point: {node1, node2, node3, node4, node5}; -- nodes
+		num_link: 0..5; -- number of trailers connecting to lead vehicles
+		num_node1: 0..5; -- number of vehicles in each node
+		num_node2: 0..5; 
+		num_node3: 0..5;
+		num_node4: 0..5;
+		num_node5: 0..5;
 	DEFINE
-		max_enter1 := 4;
+		max_enter1 := 4; -- maximum number of vehicles which can enter each node
 		max_enter2 := 4;
 		max_enter3 := 4;
 		max_enter4 := 4;
 		max_enter5 := 4;
+		max_link := 3;
 	ASSIGN
 		init(point) :=
 			case
 				(id = a): node1;
 				(id = b): node3;
 			esac;
+		init(num_node1) := 0;
 		init(num_node2) := 0;
+		init(num_node3) := 0;
+		init(num_node4) := 0;
+		init(num_node5) := 0;
+		init(num_link) := 0;
+
+		next(num_link) :=
+			case
+				(id = a) & (point = node1) & (num_link < max_link) := 
+			esac;
 
 		next(point) :=
 			case
-				(id = a) & (point = node1) & (num_node2 < max_enter2): node2;
-				(id = a) & (point = node2) & (num_node2 < max_enter2): node3;
+				(id = a) & (point = node1) & (num_node2 + num_link < max_enter2): node2;
+				(id = a) & (point = node2) & (num_node3 + num_link < max_enter3): node3;
 				(id = a) & (point = node3): node1;
 				(id = b) & (point = node3): node5;
 				(id = b) & (point = node5): node1;
@@ -49,16 +64,16 @@ MODULE connect_vehicle()
 
 
 MODULE disconnect_vehicle()
-
+	
 
 MODULE main
 	VAR
-		id: {a, b, 1, 2, 3};
+		id: {a, b, 1, 2, 3}; -- vehicle id
 		HA: process lead_vehicle(a);
 		HB: process lead_vehicle(b);
 		T1: process trailer(1);
 		T2: process trailer(2);
 		T3: process trailer(3);
 
---reachability: LTL formulae to verify whether lead vehicle HA will enter node3.
+-- reachability: LTL formulae to verify whether lead vehicle HA will enter node3.
 LTLSPEC G(HA.point = node1 -> F(HA.point = node3))
